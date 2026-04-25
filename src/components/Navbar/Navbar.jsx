@@ -15,7 +15,7 @@ class Navbar extends Component {
                       <span className="glyphicon glyphicon-small glyphicon-arrow-left"></span> Back to menu
                     </a>
                   </li>
-                ) : <li id="nav-kanaquiz"><p className="nav navbar-text">Kana Pro</p></li>
+                ) : <li id="nav-kanaquiz"><p className="nav navbar-text">rahaa's japan quiz</p></li>
               }
             </ul>
           </div>
