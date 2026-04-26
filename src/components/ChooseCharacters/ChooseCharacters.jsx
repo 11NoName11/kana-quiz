@@ -266,7 +266,6 @@ class ChooseCharacters extends Component {
             style={{display: this.state.startIsVisible ? 'none' : 'block'}}
             onClick={(e) => this.scrollToStart(e)}
           >
-            Start
           </div>
         </div>
       </div>
