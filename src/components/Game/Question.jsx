@@ -11,7 +11,9 @@ class Question extends Component {
     currentAnswer: '',
     currentQuestion: [],
     answerOptions: [],
-    stageProgress: 0
+    stageProgress: 0,
+    totalScore: 0,
+    lastAnswerScore: 0
   }
     // this.setNewQuestion = this.setNewQuestion.bind(this);
     // this.handleAnswer = this.handleAnswer.bind(this);
@@ -113,11 +115,20 @@ class Question extends Component {
     this.previousAnswer = answer;
     this.setState({previousAnswer: this.previousAnswer});
     this.previousAllowedAnswers = this.allowedAnswers;
-    if(this.isInAllowedAnswers(this.previousAnswer))
+
+    let answerScore = 0;
+    if(this.isInAllowedAnswers(this.previousAnswer)) {
       this.stageProgress = this.stageProgress+1;
-    else
+      answerScore = 10; // Add 10 points for correct answer
+    }
+    else {
       this.stageProgress = this.stageProgress > 0 ? this.stageProgress - 1 : 0;
-    this.setState({stageProgress: this.stageProgress});
+      answerScore = -5; // Subtract 5 points for wrong answer
+    }
+
+    let newScore = Math.max(0, this.state.totalScore + answerScore);
+    this.setState({stageProgress: this.stageProgress, totalScore: newScore, lastAnswerScore: answerScore});
+
     if(this.stageProgress >= quizSettings.stageLength[this.props.stage] && !this.props.isLocked) {
       setTimeout(() => { this.props.handleStageUp() }, 300);
     }
@@ -239,8 +250,21 @@ class Question extends Component {
       btnClass += " no-hover"; // disables hover effect on touch screens
     let stageProgressPercentage = Math.round((this.state.stageProgress/quizSettings.stageLength[this.props.stage])*100)+'%';
     let stageProgressPercentageStyle = { width: stageProgressPercentage }
+    const scoreIndicatorClass = this.state.lastAnswerScore > 0 ? 'score-positive' : (this.state.lastAnswerScore < 0 ? 'score-negative' : '');
+
     return (
       <div className="text-center question col-xs-12">
+        <div className="score-header">
+          <div className="score-display">
+            <div className="score-value">{this.state.totalScore}</div>
+            <div className="score-label">Points</div>
+          </div>
+          {this.state.lastAnswerScore !== 0 && (
+            <div className={`score-indicator ${scoreIndicatorClass}`}>
+              {this.state.lastAnswerScore > 0 ? '+' : ''}{this.state.lastAnswerScore}
+            </div>
+          )}
+        </div>
         {this.getPreviousResult()}
         <div className="big-character">{this.getShowableQuestion()}</div>
         <div className="answer-container">

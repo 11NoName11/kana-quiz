@@ -6,141 +6,196 @@
     margin-top: 0;
   }
 }
-.choose-characters
-{
+
+.choose-characters {
   .panel-heading {
     font-weight: bold;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
   }
+
   .panel-heading span {
-    color: #aaa;
+    color: rgba(255, 255, 255, 0.7);
   }
+
+  .panel {
+    border: none;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+    border-radius: 12px;
+    margin-bottom: 15px;
+  }
+
   .panel-footer a {
     text-decoration: none;
-    color: #337ab7;
+    color: #667eea;
+    font-weight: 500;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #764ba2;
+    }
   }
+
   .choose-row {
     font-size: 1em;
-    padding: 5px;
+    padding: 12px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: #f5f7ff;
+      cursor: pointer;
+    }
   }
+
   .choose-row:not(:last-child) {
     border-bottom: 1px #eee solid;
   }
+
   .alt-row {
-    padding-left: 20px;
-    background-color: #fafafa;
+    padding-left: 30px;
+    background-color: #fafbff;
   }
+
   .divider-row {
-    border-top: 2px #ddd solid;
+    border-top: 2px #e0e0e0 solid;
   }
+
   .toggle-caret {
     margin: 0 4px;
   }
-  @media (min-width: 768px) {
-    .choose-row:hover {
-      background-color: #f4f4f4;
-    }
-  }
+
   .choose-row:hover {
     cursor: pointer;
   }
+
   .glyphicon {
     font-size: 0.9em;
   }
+
   .glyphicon-check {
-    color: green;
+    color: #4CAF50;
   }
+
   .glyphicon-check.half {
     color: #ccc;
   }
+
   .glyphicon-unchecked {
-    color: #ccc;
+    color: #ddd;
   }
+
   .selection-areas {
-    padding: 7px;
+    padding: 10px;
   }
+
   .success-percent {
-    color: #ccc;
+    color: #667eea;
+    font-weight: 500;
   }
 }
+
 .error-message {
-  color: #d9534f;
+  color: #f44336;
   padding-bottom: 10px;
+  font-weight: 500;
 }
+
 .lock {
-  color: #888;
+  color: #999;
   margin-bottom: 10px;
 }
+
 .stage-choice {
-  border: 1px solid #999;
-  padding-left: 5px;
-  border-radius: 5px;
-  margin-right: 5px;
+  border: 2px solid #667eea;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-right: 8px;
   outline: none;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  color: #667eea;
+
+  &:hover {
+    background-color: #f5f7ff;
+  }
+
+  &:focus {
+    background-color: #f5f7ff;
+    border-color: #764ba2;
+  }
 }
+
 .switch {
-  border: 1px solid #ccc;
-  background: #e5e5e5;
-  width: 44px;
-  height: 19px;
+  border: 2px solid #ddd;
+  background: #f0f0f0;
+  width: 50px;
+  height: 26px;
   border-radius: 13px;
   cursor: pointer;
   display: block;
   float: right;
-  margin-top: 1px;
+  margin-top: 3px;
+  transition: all 0.3s ease;
 }
 
 .switch-toggle {
-  border: 1px solid #999;
-  box-shadow: 1px 1px 1px #ccc;
-  width: 19px;
-  height: 17px;
-  left: 0;
+  border: 2px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 22px;
+  height: 20px;
+  left: 1px;
   border-radius: 12px;
-  background: #eee;
+  background: white;
   position: relative;
-  transition: left .2s ease-in-out;
+  transition: left 0.3s ease-in-out;
+  top: 0;
 }
 
 .switch.on {
-  border: 1px solid #4da94f;
-  background: #5cb85c;
+  border: 2px solid #4CAF50;
+  background: #4CAF50;
 }
 
 .switch.on .switch-toggle {
-  left: 23px;
-  border: 1px solid #b8ffb2;
-  background: #b8ffb2;
+  left: 24px;
+  border: 2px solid #2E7D32;
+  background: white;
 }
 
 .switch.disabled {
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .down-arrow {
   user-select: none;
   cursor: pointer;
-  border-radius: 4px 4px 0 0;
+  border-radius: 50%;
   display: block;
   position: fixed;
   bottom: 20px;
   right: 12px;
-  color: #fff;
-  background: #d9534f;
-  padding: 7px 0 2px;
-  width: 60px;
+  color: white;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 10px 12px;
+  width: 50px;
+  height: 50px;
   text-align: center;
+  line-height: 30px;
+  font-size: 1.3em;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
 }
 
 .down-arrow:after {
   content: '';
-  display: block;
-  position: absolute;
-  left: 0;
-  top: 100%;
-  width: 0;
-  height: 0;
-  border-top: 10px solid #d9534f;
-  border-right: 30px solid transparent;
-  border-bottom: 0 solid transparent;
-  border-left: 30px solid transparent;
+  display: none;
 }

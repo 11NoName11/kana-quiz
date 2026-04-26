@@ -208,8 +208,8 @@ class ChooseCharacters extends Component {
           <div className="col-xs-12">
             <div className="panel panel-default">
               <div className="panel-body welcome">
-                <h4>Welcome to Kana Pro!</h4>
-                <p>Please choose the groups of characters that you'd like to be studying.</p>
+                <h4>Welcome to Rahaaa's quiz</h4>
+                <p>Pilih huruf katakana dan hiragana yang sudah anda pelajari</p>
               </div>
             </div>
           </div>
@@ -260,7 +260,7 @@ class ChooseCharacters extends Component {
               this.state.errMsg != '' &&
                 <div className="error-message">{this.state.errMsg}</div>
             }
-            <button ref={c => this.startRef = c} className="btn btn-danger startgame-button" onClick={() => this.startGame()}>Start the Quiz!</button>
+            <button ref={c => this.startRef = c} className="btn btn-danger startgame-button" onClick={() => this.startGame()}>Mulai quiz nyaaa</button>
           </div>
           <div className="down-arrow"
             style={{display: this.state.startIsVisible ? 'none' : 'block'}}
