@@ -43,9 +43,11 @@
     "workbox-webpack-plugin": "^7.0.0"
   },
   "dependencies": {
+    "canvas-confetti": "^1.9.4",
     "core-js": "^3.36.0",
     "lodash": "^4.17.21",
     "lodash.template": "^4.5.0",
+    "lucide-react": "^1.11.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

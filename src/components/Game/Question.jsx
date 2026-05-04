@@ -5,6 +5,11 @@ import { findRomajisAtKanaKey, removeFromArray, arrayContains, shuffle, cartesia
 import './Question.scss';
 
 class Question extends Component {
+  constructor(props) {
+    super(props);
+    this.inputRef = React.createRef();
+  }
+
   state = {
     previousQuestion: [],
     previousAnswer: '',
@@ -13,7 +18,9 @@ class Question extends Component {
     answerOptions: [],
     stageProgress: 0,
     totalScore: 0,
-    lastAnswerScore: 0
+    lastAnswerScore: 0,
+    showError: false,
+    errorMessage: ''
   }
     // this.setNewQuestion = this.setNewQuestion.bind(this);
     // this.handleAnswer = this.handleAnswer.bind(this);
@@ -108,7 +115,7 @@ class Question extends Component {
     // console.log(this.allowedAnswers);
   }
 
-  handleAnswer = answer => {
+  handleAnswer = (answer, dontAdvance = false) => {
     if(this.props.stage<=2) document.activeElement.blur(); // reset answer button's :active
     this.previousQuestion = this.currentQuestion;
     this.setState({previousQuestion: this.previousQuestion});
@@ -120,10 +127,15 @@ class Question extends Component {
     if(this.isInAllowedAnswers(this.previousAnswer)) {
       this.stageProgress = this.stageProgress+1;
       answerScore = 10; // Add 10 points for correct answer
+      this.setState({showError: false, errorMessage: ''});
     }
     else {
       this.stageProgress = this.stageProgress > 0 ? this.stageProgress - 1 : 0;
       answerScore = -5; // Subtract 5 points for wrong answer
+      if(dontAdvance) {
+        this.setState({showError: true, errorMessage: 'Jawaban salah, coba lagi!'});
+        return;
+      }
     }
 
     let newScore = Math.max(0, this.state.totalScore + answerScore);
@@ -209,30 +221,43 @@ class Question extends Component {
     else return false;
   }
 
-  handleAnswerChange = e => {
-    const typed = e.target.value.replace(/\s+/g, '');
-    this.setState({currentAnswer: typed}, () => {
-      const lowerTyped = typed.toLowerCase();
-      if (typed === '') return;
-
-      const isCorrect = this.allowedAnswers.some(a => a.toLowerCase() === lowerTyped);
-      const isPrefix = this.allowedAnswers.some(a => a.toLowerCase().startsWith(lowerTyped));
-
-      // 1. Kalau benar, langsung submit.
-      // 2. Kalau sudah pasti salah (bukan prefix dari jawaban apapun), langsung submit salah.
-      if (isCorrect || !isPrefix) {
-        this.handleAnswer(lowerTyped);
-        this.setState({currentAnswer: ''});
-      }
-      // Kalau masih prefix (misal ngetik 'c' untuk 'chi'), diamkan saja tunggu huruf berikutnya.
-    });
+  getExpectedAnswerLength() {
+    // Get the length of the first allowed answer (to know when user is done typing)
+    if(this.allowedAnswers && this.allowedAnswers.length > 0) {
+      return this.allowedAnswers[0].length;
+    }
+    return 0;
   }
 
-  handleSubmit = e => {
-    e.preventDefault();
-    if(this.state.currentAnswer!='') {
-      this.handleAnswer(this.state.currentAnswer.toLowerCase());
-      this.setState({currentAnswer: ''});
+  checkAnswer(answer) {
+    // Check if answer is correct
+    const isCorrect = arrayContains(answer, this.allowedAnswers);
+
+    // Clear input and auto-focus (both for correct and wrong answers)
+    this.setState({currentAnswer: ''}, () => {
+      if(this.inputRef.current) {
+        this.inputRef.current.focus();
+      }
+    });
+
+    if(isCorrect) {
+      this.handleAnswer(answer, false); // Correct: auto-advance
+    } else {
+      this.handleAnswer(answer, true); // Wrong: show error, don't advance
+    }
+  }
+
+  handleAnswerChange = e => {
+    const typed = e.target.value.replace(/\s+/g, '');
+    this.setState({currentAnswer: typed, showError: false});
+
+    // Auto-check when user has typed the expected length
+    if(typed.length > 0) {
+      const expectedLength = this.getExpectedAnswerLength();
+      if(typed.length === expectedLength) {
+        // User has typed all expected characters, check the answer
+        this.checkAnswer(typed.toLowerCase());
+      }
     }
   }
 
@@ -266,6 +291,12 @@ class Question extends Component {
           )}
         </div>
         {this.getPreviousResult()}
+        {this.state.showError && (
+          <div className="error-notification">
+            <span className="glyphicon glyphicon-warning-sign"></span>
+            {this.state.errorMessage}
+          </div>
+        )}
         <div className="big-character">{this.getShowableQuestion()}</div>
         <div className="answer-container">
           {
@@ -278,9 +309,7 @@ class Question extends Component {
                   handleAnswer={this.handleAnswer} />
               })
             : <div className="answer-form-container">
-                <form onSubmit={this.handleSubmit}>
-                  <input autoFocus className="answer-input" type="text" value={this.state.currentAnswer} onChange={this.handleAnswerChange} />
-                </form>
+                <input ref={this.inputRef} autoFocus className="answer-input" type="text" value={this.state.currentAnswer} onChange={this.handleAnswerChange} placeholder="jawab" />
               </div>
           }
         </div>
