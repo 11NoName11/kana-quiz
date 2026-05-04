@@ -33,6 +33,46 @@
     }
   }
 
+  .stats-display {
+    display: flex;
+    gap: 15px;
+
+    .stat-item {
+      border-radius: 12px;
+      padding: 12px 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      min-width: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+
+      .stat-value {
+        font-size: 2em;
+        font-weight: bold;
+        line-height: 1;
+      }
+
+      .stat-label {
+        font-size: 0.85em;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 500;
+      }
+
+      &.correct {
+        background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+        color: white;
+      }
+
+      &.wrong {
+        background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
+        color: white;
+      }
+    }
+  }
+
   .score-indicator {
     font-size: 1.8em;
     font-weight: bold;

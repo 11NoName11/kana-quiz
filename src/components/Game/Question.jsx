@@ -20,7 +20,9 @@ class Question extends Component {
     totalScore: 0,
     lastAnswerScore: 0,
     showError: false,
-    errorMessage: ''
+    errorMessage: '',
+    correctCount: 0,
+    wrongCount: 0
   }
     // this.setNewQuestion = this.setNewQuestion.bind(this);
     // this.handleAnswer = this.handleAnswer.bind(this);
@@ -124,14 +126,19 @@ class Question extends Component {
     this.previousAllowedAnswers = this.allowedAnswers;
 
     let answerScore = 0;
+    let newCorrectCount = this.state.correctCount;
+    let newWrongCount = this.state.wrongCount;
+
     if(this.isInAllowedAnswers(this.previousAnswer)) {
       this.stageProgress = this.stageProgress+1;
       answerScore = 10; // Add 10 points for correct answer
+      newCorrectCount = this.state.correctCount + 1;
       this.setState({showError: false, errorMessage: ''});
     }
     else {
       this.stageProgress = this.stageProgress > 0 ? this.stageProgress - 1 : 0;
       answerScore = -5; // Subtract 5 points for wrong answer
+      newWrongCount = this.state.wrongCount + 1;
       if(dontAdvance) {
         this.setState({showError: true, errorMessage: 'Jawaban salah, coba lagi!'});
         return;
@@ -139,7 +146,7 @@ class Question extends Component {
     }
 
     let newScore = Math.max(0, this.state.totalScore + answerScore);
-    this.setState({stageProgress: this.stageProgress, totalScore: newScore, lastAnswerScore: answerScore});
+    this.setState({stageProgress: this.stageProgress, totalScore: newScore, lastAnswerScore: answerScore, correctCount: newCorrectCount, wrongCount: newWrongCount});
 
     if(this.stageProgress >= quizSettings.stageLength[this.props.stage] && !this.props.isLocked) {
       setTimeout(() => { this.props.handleStageUp() }, 300);
@@ -283,6 +290,16 @@ class Question extends Component {
           <div className="score-display">
             <div className="score-value">{this.state.totalScore}</div>
             <div className="score-label">Points</div>
+          </div>
+          <div className="stats-display">
+            <div className="stat-item correct">
+              <span className="stat-value">{this.state.correctCount}</span>
+              <span className="stat-label">Correct</span>
+            </div>
+            <div className="stat-item wrong">
+              <span className="stat-value">{this.state.wrongCount}</span>
+              <span className="stat-label">Wrong</span>
+            </div>
           </div>
           {this.state.lastAnswerScore !== 0 && (
             <div className={`score-indicator ${scoreIndicatorClass}`}>
