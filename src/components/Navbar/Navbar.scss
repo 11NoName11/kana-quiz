@@ -3,6 +3,9 @@
   @media (max-width: 768px) {
     font-size: 1.0em;
   }
+  @media (max-width: 480px) {
+    font-size: 0.95em;
+  }
   .glyphicon {
     font-size: 0.9em;
     color: #ff6b9d;
@@ -13,6 +16,11 @@
   background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
   border: none;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  padding: 10px 0;
+
+  @media (max-width: 480px) {
+    padding: 8px 0;
+  }
 }
 
 .hidden-nano {
@@ -24,6 +32,12 @@
 .nav a {
   color: #fff !important;
   transition: color 0.3s ease;
+  padding: 10px 15px !important;
+
+  @media (max-width: 480px) {
+    padding: 8px 10px !important;
+    font-size: 0.95em;
+  }
 
   &:hover {
     color: #ffb6d9 !important;
@@ -34,6 +48,12 @@
   color: #fff !important;
   cursor: default;
   margin-bottom: 0;
+  padding: 0 15px;
+
+  @media (max-width: 480px) {
+    padding: 0 10px;
+    font-size: 0.95em;
+  }
 }
 
 #nav-kanaquiz a:hover {

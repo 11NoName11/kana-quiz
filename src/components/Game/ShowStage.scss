@@ -50,6 +50,34 @@
     font-weight: 500;
   }
 
+  .stage-timer-display {
+    margin-top: 50px;
+    padding: 25px 40px;
+    background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+    border: 3px solid #FFA726;
+    border-radius: 15px;
+    display: inline-block;
+    box-shadow: 0 8px 20px rgba(255, 152, 0, 0.3);
+
+    .timer-info {
+      font-size: 1.1em;
+      color: white;
+      margin: 0 0 15px 0;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .timer-value-large {
+      font-size: 3.5em;
+      font-weight: bold;
+      color: white;
+      margin: 0;
+      text-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+      line-height: 1;
+    }
+  }
+
   @media (max-width: 768px) {
     margin-top: 100px;
     margin-bottom: 100px;

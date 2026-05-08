@@ -29,11 +29,11 @@ class Game extends Component {
       <div>
         {
           this.state.showScreen==='stage' &&
-            <ShowStage lockStage={this.lockStage} handleShowQuestion={this.showQuestion} handleEndGame={this.props.handleEndGame} stage={this.props.stage} />
+            <ShowStage lockStage={this.lockStage} handleShowQuestion={this.showQuestion} handleEndGame={this.props.handleEndGame} stage={this.props.stage} gameTimer={this.props.gameTimer} />
         }
         {
           this.state.showScreen==='question' &&
-            <Question isLocked={this.props.isLocked} handleStageUp={this.stageUp} stage={this.props.stage} decidedGroups={this.props.decidedGroups} />
+            <Question isLocked={this.props.isLocked} handleStageUp={this.stageUp} stage={this.props.stage} decidedGroups={this.props.decidedGroups} gameTimer={this.props.gameTimer} />
         }
       </div>
     );

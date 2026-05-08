@@ -10,7 +10,8 @@ class ChooseCharacters extends Component {
     selectedGroups: this.props.selectedGroups,
     showAlternatives: [],
     showSimilars: [],
-    startIsVisible: true
+    startIsVisible: true,
+    selectedTimer: 10
   }
 
   componentDidMount() {
@@ -198,6 +199,10 @@ class ChooseCharacters extends Component {
       this.setState({ errMsg: 'Choose at least one group!'});
       return;
     }
+    // Pass timer to parent FIRST before starting game
+    if(this.props.setGameTimer) {
+      this.props.setGameTimer(this.state.selectedTimer);
+    }
     this.props.handleStartGame(this.state.selectedGroups);
   }
 
@@ -244,16 +249,43 @@ class ChooseCharacters extends Component {
               </div>
             </div>
           </div>
+          <div className="col-sm-3 col-xs-12">
+            <div className="level5-timer-selection">
+              <h5>⏱️ Level 5 Timer</h5>
+              <div className="timer-buttons">
+                {[5, 8, 10, 12, 13, 15].map(time => (
+                  <button
+                    key={time}
+                    className={`timer-btn ${this.state.selectedTimer === time ? 'active' : ''}`}
+                    onClick={() => this.setState({selectedTimer: time})}
+                  >
+                    {time}s
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
           <div className="col-sm-3 col-xs-12 pull-right">
             <span className="pull-right lock">Lock to stage &nbsp;
               {
                 this.props.isLocked &&
-                  <input className="stage-choice" type="number" min="1" max="4" maxLength="1" size="1"
-                    onChange={(e)=>this.props.lockStage(e.target.value, true)}
+                  <input className="stage-choice" type="number" min="1" max="5" maxLength="1" size="1"
+                    onChange={(e)=>{
+                      const stage = parseInt(e.target.value);
+                      if(stage === 5 && this.props.setGameTimer) {
+                        this.props.setGameTimer(this.state.selectedTimer);
+                      }
+                      this.props.lockStage(stage, true);
+                    }}
                     value={this.props.stage}
                   />
               }
-              <Switch onClick={()=>this.props.lockStage(1)} on={this.props.isLocked} /></span>
+              <Switch onClick={()=>{
+                if(this.props.stage === 5 && this.props.setGameTimer) {
+                  this.props.setGameTimer(this.state.selectedTimer);
+                }
+                this.props.lockStage(1);
+              }} on={this.props.isLocked} /></span>
           </div>
           <div className="col-sm-offset-3 col-sm-6 col-xs-12 text-center">
             {

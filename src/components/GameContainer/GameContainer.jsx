@@ -7,7 +7,8 @@ class GameContainer extends Component {
   state = {
     stage:1,
     isLocked: false,
-    decidedGroups: JSON.parse(localStorage.getItem('decidedGroups') || null) || []
+    decidedGroups: JSON.parse(localStorage.getItem('decidedGroups') || null) || [],
+    gameTimer: 10
   }
 
   componentWillReceiveProps() {
@@ -18,8 +19,8 @@ class GameContainer extends Component {
   startGame = decidedGroups => {
     if(parseInt(this.state.stage)<1 || isNaN(parseInt(this.state.stage)))
       this.setState({stage: 1});
-    else if(parseInt(this.state.stage)>4)
-      this.setState({stage: 4});
+    else if(parseInt(this.state.stage)>5)
+      this.setState({stage: 5});
 
     this.setState({decidedGroups: decidedGroups});
     localStorage.setItem('decidedGroups', JSON.stringify(decidedGroups));
@@ -31,11 +32,16 @@ class GameContainer extends Component {
   }
 
   lockStage = (stage, forceLock) => {
-    // if(stage<1 || stage>4) stage=1; // don't use this to allow backspace
+    // Parse stage to ensure it's an integer
+    const parsedStage = typeof stage === 'string' ? parseInt(stage) : stage;
     if(forceLock)
-      this.setState({stage: stage, isLocked: true});
+      this.setState({stage: parsedStage, isLocked: true});
     else
-      this.setState({stage: stage, isLocked: !this.state.isLocked});
+      this.setState({stage: parsedStage, isLocked: !this.state.isLocked});
+  }
+
+  setGameTimer = (timerValue) => {
+    this.setState({gameTimer: timerValue});
   }
 
   render() {
@@ -44,6 +50,7 @@ class GameContainer extends Component {
         { this.props.gameState==='chooseCharacters' &&
             <ChooseCharacters selectedGroups={this.state.decidedGroups}
               handleStartGame={this.startGame}
+              setGameTimer={this.setGameTimer}
               stage={this.state.stage}
               isLocked={this.state.isLocked}
               lockStage={this.lockStage}
@@ -56,6 +63,7 @@ class GameContainer extends Component {
                 stage={this.state.stage}
                 isLocked={this.state.isLocked}
                 lockStage={this.lockStage}
+                gameTimer={this.state.gameTimer}
               />
           }
         </div>

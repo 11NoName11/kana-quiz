@@ -10,7 +10,7 @@ class ShowStage extends Component {
 
   componentDidMount() {
     this.setState({show: true});
-    if(this.props.stage <= 4)
+    if(this.props.stage <= 5)
       this.timeoutID = setTimeout(this.removeStage, 1200); // how soon we start fading out (1500)
     window.scrollTo(0,0);
   }
@@ -33,13 +33,14 @@ class ShowStage extends Component {
     else if(this.props.stage==2) { stageDescription = 'Choose one'; stageSecondaryDescription = 'Reverse'; }
     else if(this.props.stage==3) stageDescription = 'Write the answer';
     else if(this.props.stage==4) { stageDescription = 'Write the answer'; stageSecondaryDescription = 'Three at once'; }
-    else if(this.props.stage==5)
+    else if(this.props.stage==5) { stageDescription = 'Write the answer'; stageSecondaryDescription = 'Five at once'; }
+    else if(this.props.stage==6)
       return (
         <div className="text-center show-end">
           <h1>Congratulations!</h1>
-          <h3>You have passed all 4 stages.</h3>
+          <h3>You have passed all 5 stages.</h3>
           <h4>Would you like to keep playing or go back to menu?</h4>
-          <p><button className="btn btn-danger keep-playing" onClick={()=>this.props.lockStage(4)}>Keep playing</button></p>
+          <p><button className="btn btn-danger keep-playing" onClick={()=>this.props.lockStage(5)}>Keep playing</button></p>
           <p><button className="btn btn-danger back-to-menu" onClick={this.props.handleEndGame}>Back to menu</button></p>
         </div>
       );
@@ -56,10 +57,25 @@ class ShowStage extends Component {
   render() {
     const content = this.showStage();
     const { show } = this.state;
+    const timerValue = this.props.gameTimer || 10; // Fallback ke 10 jika undefined
 
     return (
       <CSSTransition classNames="stage" timeout={{enter: 900, exit: 900}} in={show} unmountOnExit>
-        {state => content}
+        {state => {
+          // Manually add timer display for level 5
+          if(this.props.stage === 5) {
+            return (
+              <div>
+                {content}
+                <div className="stage-timer-display">
+                  <p className="timer-info">Selected time:</p>
+                  <div className="timer-value-large">{timerValue}s</div>
+                </div>
+              </div>
+            );
+          }
+          return content;
+        }}
       </CSSTransition>
     );
   }

@@ -22,7 +22,10 @@ class Question extends Component {
     showError: false,
     errorMessage: '',
     correctCount: 0,
-    wrongCount: 0
+    wrongCount: 0,
+    timeLimit: this.props.gameTimer || 10,
+    timeRemaining: this.props.gameTimer || 10,
+    timerActive: false
   }
     // this.setNewQuestion = this.setNewQuestion.bind(this);
     // this.handleAnswer = this.handleAnswer.bind(this);
@@ -79,15 +82,60 @@ class Question extends Component {
     return randomizedKanas;
   }
 
+  startTimer = () => {
+    if(this.props.stage === 5) {
+      // Reset timer to the limit value
+      this.setState({timeRemaining: this.state.timeLimit, timerActive: true}, () => {
+        this.timerInterval = setInterval(() => {
+          this.setState(prevState => {
+            if(prevState.timeRemaining <= 1) {
+              this.stopTimer();
+              this.handleTimeUp();
+              return {timeRemaining: 0, timerActive: false};
+            }
+            return {timeRemaining: prevState.timeRemaining - 1};
+          });
+        }, 1000);
+      });
+    }
+  }
+
+  stopTimer = () => {
+    if(this.timerInterval) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
+  }
+
+  handleTimeUp = () => {
+    // Time is up, auto-submit current answer (or as wrong if empty)
+    if(this.state.currentAnswer === '') {
+      this.handleAnswer('', true);
+    } else {
+      this.handleAnswer(this.state.currentAnswer, true);
+    }
+  }
+
+  handleTimeLimitChange = (newLimit) => {
+    this.setState({timeLimit: newLimit, timeRemaining: newLimit});
+    this.stopTimer();
+  }
+
   setNewQuestion() {
-    if(this.props.stage!=4)
+    this.stopTimer();
+    if(this.props.stage!=4 && this.props.stage!=5)
       this.currentQuestion = this.getRandomKanas(1, false, this.previousQuestion);
-    else
+    else if(this.props.stage==4)
       this.currentQuestion = this.getRandomKanas(3, false, this.previousQuestion);
+    else if(this.props.stage==5)
+      this.currentQuestion = this.getRandomKanas(5, false, this.previousQuestion);
     this.setState({currentQuestion: this.currentQuestion});
     this.setAnswerOptions();
     this.setAllowedAnswers();
-    // console.log(this.currentQuestion);
+    // Start timer for level 5
+    if(this.props.stage === 5) {
+      this.startTimer();
+    }
   }
 
   setAnswerOptions() {
@@ -103,7 +151,7 @@ class Question extends Component {
       this.allowedAnswers = findRomajisAtKanaKey(this.currentQuestion, kanaDictionary);
     else if(this.props.stage==2)
       this.allowedAnswers = this.currentQuestion;
-    else if(this.props.stage==4) {
+    else if(this.props.stage==4 || this.props.stage==5) {
       let tempAllowedAnswers = [];
 
       this.currentQuestion.forEach(key => {
@@ -123,7 +171,7 @@ class Question extends Component {
     this.setState({previousQuestion: this.previousQuestion});
     this.previousAnswer = answer;
     this.setState({previousAnswer: this.previousAnswer});
-    this.previousAllowedAnswers = this.allowedAnswers;
+    this.previousAllowedAnswers = this.allowedAnswers; // Set BEFORE checking
 
     let answerScore = 0;
     let newCorrectCount = this.state.correctCount;
@@ -131,22 +179,24 @@ class Question extends Component {
 
     if(this.isInAllowedAnswers(this.previousAnswer)) {
       this.stageProgress = this.stageProgress+1;
-      answerScore = 10; // Add 10 points for correct answer
+      answerScore = 5; // Add 5 points for correct answer
       newCorrectCount = this.state.correctCount + 1;
       this.setState({showError: false, errorMessage: ''});
     }
     else {
       this.stageProgress = this.stageProgress > 0 ? this.stageProgress - 1 : 0;
-      answerScore = -5; // Subtract 5 points for wrong answer
+      answerScore = -1; // Subtract 1 point for wrong answer
       newWrongCount = this.state.wrongCount + 1;
-      if(dontAdvance) {
-        this.setState({showError: true, errorMessage: 'Jawaban salah, coba lagi!'});
-        return;
-      }
+      newCorrectCount = this.state.correctCount > 0 ? this.state.correctCount - 1 : 0; // Decrease correct count on wrong answer
     }
 
     let newScore = Math.max(0, this.state.totalScore + answerScore);
     this.setState({stageProgress: this.stageProgress, totalScore: newScore, lastAnswerScore: answerScore, correctCount: newCorrectCount, wrongCount: newWrongCount});
+
+    if(dontAdvance && !this.isInAllowedAnswers(this.previousAnswer)) {
+      this.setState({showError: true, errorMessage: 'Jawaban salah, coba lagi!'});
+      return;
+    }
 
     if(this.stageProgress >= quizSettings.stageLength[this.props.stage] && !this.props.isLocked) {
       setTimeout(() => { this.props.handleStageUp() }, 300);
@@ -221,9 +271,9 @@ class Question extends Component {
   }
 
   isInAllowedAnswers(previousAnswer) {
-    // console.log(previousAnswer);
-    // console.log(this.allowedAnswers);
-    if(arrayContains(previousAnswer, this.previousAllowedAnswers))
+    // Check against previousAllowedAnswers which is now correctly set
+    if(previousAnswer === '') return false;
+    if(this.previousAllowedAnswers && arrayContains(previousAnswer, this.previousAllowedAnswers))
       return true;
     else return false;
   }
@@ -239,6 +289,9 @@ class Question extends Component {
   checkAnswer(answer) {
     // Check if answer is correct
     const isCorrect = arrayContains(answer, this.allowedAnswers);
+
+    // Stop timer when answer is submitted
+    this.stopTimer();
 
     // Clear input and auto-focus (both for correct and wrong answers)
     this.setState({currentAnswer: ''}, () => {
@@ -270,10 +323,29 @@ class Question extends Component {
 
   componentWillMount() {
     this.initializeCharacters();
+    // Initialize timer state immediately
+    const timerValue = (this.props.stage === 5 && this.props.gameTimer) ? this.props.gameTimer : 10;
+    this.state.timeLimit = timerValue;
+    this.state.timeRemaining = timerValue;
   }
 
   componentDidMount() {
     this.setNewQuestion();
+  }
+
+  componentDidUpdate(prevProps) {
+    // If timer prop changed, update state and restart timer
+    if(prevProps.gameTimer !== this.props.gameTimer && this.props.gameTimer) {
+      this.setState({timeLimit: this.props.gameTimer, timeRemaining: this.props.gameTimer}, () => {
+        // Restart timer after state is updated
+        this.stopTimer();
+        this.startTimer();
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    this.stopTimer();
   }
 
   render() {
@@ -301,6 +373,12 @@ class Question extends Component {
               <span className="stat-label">Wrong</span>
             </div>
           </div>
+          {this.props.stage === 5 && (
+            <div className={`timer-display ${this.state.timeRemaining <= 5 ? 'timer-warning' : ''}`}>
+              <span className="timer-value">{this.state.timeRemaining}s</span>
+              <span className="timer-label">Time</span>
+            </div>
+          )}
           {this.state.lastAnswerScore !== 0 && (
             <div className={`score-indicator ${scoreIndicatorClass}`}>
               {this.state.lastAnswerScore > 0 ? '+' : ''}{this.state.lastAnswerScore}

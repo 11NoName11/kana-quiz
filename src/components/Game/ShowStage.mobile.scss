@@ -1,0 +1,254 @@
+// Mobile Responsive Overrides for ShowStage Component
+
+.show-stage {
+  margin-top: 130px;
+  animation: fadeInDown 0.6s ease-out;
+
+  h1 {
+    font-size: 3.5em;
+    color: #667eea;
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+
+  h3 {
+    margin-top: 30px;
+    font-size: 2em;
+    color: #764ba2;
+  }
+
+  h4 {
+    font-size: 1.3em;
+    color: #666;
+    font-weight: 500;
+  }
+
+  .stage-timer-display {
+    margin-top: 50px;
+    padding: 25px 40px;
+    background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+    border: 3px solid #FFA726;
+    border-radius: 15px;
+    display: inline-block;
+    box-shadow: 0 8px 20px rgba(255, 152, 0, 0.3);
+
+    .timer-info {
+      font-size: 1.1em;
+      color: white;
+      margin: 0 0 15px 0;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .timer-value-large {
+      font-size: 3.5em;
+      font-weight: bold;
+      color: white;
+      margin: 0;
+      text-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+      line-height: 1;
+    }
+  }
+
+  @media (max-width: 768px) {
+    margin-top: 100px;
+    margin-bottom: 100px;
+
+    h1 {
+      font-size: 2.5em;
+    }
+
+    h3 {
+      font-size: 1.5em;
+    }
+
+    h4 {
+      font-size: 1.1em;
+    }
+
+    .stage-timer-display {
+      padding: 20px 35px;
+      margin-top: 40px;
+      border: 2px solid #FFA726;
+
+      .timer-info {
+        font-size: 1em;
+        margin-bottom: 12px;
+      }
+
+      .timer-value-large {
+        font-size: 2.8em;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    margin-top: 80px;
+    margin-bottom: 80px;
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      margin-top: 15px;
+      font-size: 1.2em;
+    }
+
+    h4 {
+      font-size: 1em;
+      margin-top: 12px;
+    }
+
+    .stage-timer-display {
+      padding: 18px 30px;
+      margin-top: 30px;
+      border-radius: 12px;
+      border: 2px solid #FFA726;
+      box-shadow: 0 4px 12px rgba(255, 152, 0, 0.25);
+
+      .timer-info {
+        font-size: 0.9em;
+        margin-bottom: 10px;
+        letter-spacing: 0.5px;
+      }
+
+      .timer-value-large {
+        font-size: 2.5em;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+    }
+  }
+}
+
+.show-end {
+  margin-top: 80px;
+  animation: fadeInDown 0.6s ease-out;
+
+  h1 {
+    font-size: 3.5em;
+    color: #4CAF50;
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+
+  h3,
+  h4 {
+    margin-top: 20px;
+    color: #666;
+  }
+
+  h3 {
+    font-size: 1.8em;
+  }
+
+  h4 {
+    font-size: 1.2em;
+  }
+
+  .keep-playing,
+  .back-to-menu {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    padding: 12px 30px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    &:active {
+      transform: translateY(-1px);
+    }
+  }
+
+  @media (max-width: 768px) {
+    margin-top: 70px;
+
+    h1 {
+      font-size: 2.5em;
+    }
+
+    h3 {
+      font-size: 1.4em;
+    }
+
+    h4 {
+      font-size: 1em;
+    }
+
+    .keep-playing,
+    .back-to-menu {
+      padding: 10px 25px;
+      font-size: 1em;
+    }
+  }
+
+  @media (max-width: 480px) {
+    margin-top: 60px;
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      font-size: 1.2em;
+      margin-top: 12px;
+    }
+
+    h4 {
+      font-size: 0.95em;
+      margin-top: 10px;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+    .keep-playing,
+    .back-to-menu {
+      padding: 10px 20px;
+      font-size: 0.95em;
+      width: 100%;
+      max-width: 300px;
+    }
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stage-enter {
+  opacity: 0.01;
+}
+
+.stage-enter.stage-enter-active {
+  opacity: 1;
+  transition: opacity 1s ease-in;
+}
+
+.stage-exit {
+  opacity: 1;
+}
+
+.stage-exit.stage-exit-active {
+  opacity: 0.01;
+  transition: opacity 1s ease-in;
+}
