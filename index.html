@@ -1,33 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <style>
-      .app-update {
-        display: none;
-        position: fixed;
-        bottom: 0;
-        background: #d9534f;
-        border: 1px #b42c27 solid;
-        color: #fff;
-        min-height: 50px;
-        border-radius: 5px;
-        width: 100%;
-      }
-      .app-update.show { display: block; }
-      .avoidwrap { display: inline-block; }
-    </style>
-    <title>Rahaaa's kana quiz</title>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="Description" content="Application for studying hiragana & katakana characters.">
-  </head>
-  <body>
-    <div id="app"></div>
+<head>
+  <style>
+    .app-update {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      background: #d9534f;
+      border: 1px #b42c27 solid;
+      color: #fff;
+      min-height: 50px;
+      border-radius: 5px;
+      width: 100%;
+    }
 
-    <button id="app-update" class="app-update">
-      <span class="avoidwrap">New version is available!</span>
-      <span class="avoidwrap">Click here to update.</span>
-    </button>
-  </body>
+    .app-update.show {
+      display: block;
+    }
+
+    .avoidwrap {
+      display: inline-block;
+    }
+  </style>
+
+  <title>Rahaaa's kana quiz</title>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta
+    name="description"
+    content="Application for studying hiragana & katakana characters."
+  >
+
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#667eea">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/src/assets/img/android-chrome-192x192.ico">
+  <link rel="icon" type="image/png" sizes="512x512" href="/src/assets/img/android-chrome-512x512.ico">
+  <link rel="shortcut icon" href="/src/assets/img/android-chrome-192x192.ico">
+  <!-- Manifest -->
+  <link rel="manifest" href="/site.webmanifest">
+</head>
+
+<body>
+  <div id="app"></div>
+
+  <button id="app-update" class="app-update">
+    <span class="avoidwrap">New version is available!</span>
+    <span class="avoidwrap">Click here to update.</span>
+  </button>
+</body>
 </html>
