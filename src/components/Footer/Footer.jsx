@@ -41,6 +41,11 @@ const Footer = () => {
             <li><a href="https://instagram.com/rahawaeh_113" target="_blank" rel="noopener noreferrer">Follow on Instagram</a></li>
           </ul>
         </div>
+
+        <div className="footer-section">
+          <h4>Inspiration</h4>
+          <p>Inspired by <a href="https://github.com/anzzstuff/kanaquiz" target="_blank" rel="noopener noreferrer">anzzstuff/kanaquiz</a></p>
+        </div>
       </div>
 
       <div className="footer-bottom">
