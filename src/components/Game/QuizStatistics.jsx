@@ -44,11 +44,11 @@ class QuizStatistics extends Component {
   }
 
   render() {
-    const { 
-      correctCount, 
-      wrongCount, 
-      kanaStats, 
-      onContinue, 
+    const {
+      correctCount,
+      wrongCount,
+      kanaStats,
+      onContinue,
       onFinish,
       totalScore,
       stage
@@ -134,15 +134,15 @@ class QuizStatistics extends Component {
 
           {/* Action Buttons */}
           <div className="stats-actions">
-            <button 
-              className="btn btn-continue" 
+            <button
+              className="btn btn-continue"
               onClick={onContinue}
             >
               <span className="btn-icon">▶</span>
               Lanjutkan Quiz
             </button>
-            <button 
-              className="btn btn-finish" 
+            <button
+              className="btn btn-finish"
               onClick={onFinish}
             >
               <span className="btn-icon">✓</span>

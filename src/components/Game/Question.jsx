@@ -257,7 +257,7 @@ class Question extends Component {
     const timeSpent = Math.round((Date.now() - this.state.quizStartTime) / 1000);
     const kanaStats = calculateKanaStats(this.state.answerHistory, {});
     const report = generateQuizReport(this.state.answerHistory, timeSpent, this.props.decidedGroups);
-    
+
     if(this.props.onShowStatistics) {
       this.props.onShowStatistics({
         correctCount: this.state.correctCount,
@@ -425,7 +425,7 @@ class Question extends Component {
     const canFinishQuiz = this.props.isLocked &&
                           (this.props.stage === 4 || this.props.stage === 5) &&
                           this.state.stageProgress >= quizSettings.stageLength[this.props.stage];
-    
+
     // Check if user can view statistics (Mode Lock Level 4/5 with some answers)
     const canViewStats = this.props.isLocked &&
                          (this.props.stage === 4 || this.props.stage === 5) &&
