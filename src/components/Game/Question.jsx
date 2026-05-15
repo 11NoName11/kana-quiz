@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { kanaDictionary } from '../../data/kanaDictionary';
 import { quizSettings } from '../../data/quizSettings';
 import { findRomajisAtKanaKey, removeFromArray, arrayContains, shuffle, cartesianProduct } from '../../data/helperFuncs';
+import { generateQuizReport, saveQuizReport } from '../../data/quizAnalysisUtils';
 import './Question.scss';
 
 class Question extends Component {
@@ -25,7 +26,11 @@ class Question extends Component {
     wrongCount: 0,
     timeLimit: this.props.gameTimer || 10,
     timeRemaining: this.props.gameTimer || 10,
-    timerActive: false
+    timerActive: false,
+    // Quiz analysis tracking
+    answerHistory: [],
+    quizStartTime: Date.now(),
+    isQuizComplete: false
   }
     // this.setNewQuestion = this.setNewQuestion.bind(this);
     // this.handleAnswer = this.handleAnswer.bind(this);
@@ -176,8 +181,9 @@ class Question extends Component {
     let answerScore = 0;
     let newCorrectCount = this.state.correctCount;
     let newWrongCount = this.state.wrongCount;
+    const isCorrect = this.isInAllowedAnswers(this.previousAnswer);
 
-    if(this.isInAllowedAnswers(this.previousAnswer)) {
+    if(isCorrect) {
       this.stageProgress = this.stageProgress+1;
       answerScore = 5; // Add 5 points for correct answer
       newCorrectCount = this.state.correctCount + 1;
@@ -191,18 +197,59 @@ class Question extends Component {
     }
 
     let newScore = Math.max(0, this.state.totalScore + answerScore);
-    this.setState({stageProgress: this.stageProgress, totalScore: newScore, lastAnswerScore: answerScore, correctCount: newCorrectCount, wrongCount: newWrongCount});
+
+    // Track answer history for analysis (Level 4 & 5 only)
+    let newAnswerHistory = this.state.answerHistory;
+    if(this.props.stage === 4 || this.props.stage === 5) {
+      newAnswerHistory = [...this.state.answerHistory, {
+        kanaList: this.previousQuestion,
+        answer: this.previousAnswer,
+        isCorrect: isCorrect,
+        timestamp: Date.now()
+      }];
+    }
+
+    this.setState({
+      stageProgress: this.stageProgress,
+      totalScore: newScore,
+      lastAnswerScore: answerScore,
+      correctCount: newCorrectCount,
+      wrongCount: newWrongCount,
+      answerHistory: newAnswerHistory
+    });
 
     if(dontAdvance && !this.isInAllowedAnswers(this.previousAnswer)) {
       this.setState({showError: true, errorMessage: 'Jawaban salah, coba lagi!'});
       return;
     }
 
-    if(this.stageProgress >= quizSettings.stageLength[this.props.stage] && !this.props.isLocked) {
+    // Mode Lock behavior: endless quiz
+    if(this.props.isLocked && (this.props.stage === 4 || this.props.stage === 5)) {
+      // Just continue with next question (endless mode)
+      this.setNewQuestion();
+    }
+    // Normal behavior: move to next stage
+    else if(this.stageProgress >= quizSettings.stageLength[this.props.stage]) {
       setTimeout(() => { this.props.handleStageUp() }, 300);
     }
-    else
+    else {
       this.setNewQuestion();
+    }
+  }
+
+  // Method to finish endless quiz and show results
+  finishQuiz = () => {
+    const timeSpent = Math.round((Date.now() - this.state.quizStartTime) / 1000);
+    const report = generateQuizReport(this.state.answerHistory, timeSpent, this.props.decidedGroups);
+
+    // Save to localStorage
+    saveQuizReport(report, this.props.stage, this.props.decidedGroups);
+
+    // Notify parent component to show result analysis
+    this.setState({ isQuizComplete: true });
+    if(this.props.onQuizComplete) {
+      this.props.onQuizComplete(report);
+    }
   }
 
   initializeCharacters() {
@@ -356,6 +403,11 @@ class Question extends Component {
     let stageProgressPercentageStyle = { width: stageProgressPercentage }
     const scoreIndicatorClass = this.state.lastAnswerScore > 0 ? 'score-positive' : (this.state.lastAnswerScore < 0 ? 'score-negative' : '');
 
+    // Check if quiz can be finished (Mode Lock + 20+ soal + Level 4/5)
+    const canFinishQuiz = this.props.isLocked &&
+                          (this.props.stage === 4 || this.props.stage === 5) &&
+                          this.state.stageProgress >= quizSettings.stageLength[this.props.stage];
+
     return (
       <div className="text-center question col-xs-12">
         <div className="score-header">
@@ -383,6 +435,15 @@ class Question extends Component {
             <div className={`score-indicator ${scoreIndicatorClass}`}>
               {this.state.lastAnswerScore > 0 ? '+' : ''}{this.state.lastAnswerScore}
             </div>
+          )}
+          {canFinishQuiz && (
+            <button
+              className="btn btn-sm btn-success finish-quiz-button"
+              onClick={this.finishQuiz}
+              title="Selesai dan lihat hasil (minimal 20 soal terjawab)"
+            >
+              ✓ Selesai
+            </button>
           )}
         </div>
         {this.getPreviousResult()}
@@ -416,7 +477,10 @@ class Question extends Component {
             aria-valuemax={quizSettings.stageLength[this.props.stage]}
             style={stageProgressPercentageStyle}
           >
-            <span>Stage {this.props.stage} {this.props.isLocked?' (Locked)':''}</span>
+            <span>
+              Stage {this.props.stage} {this.props.isLocked ? ' (Locked - Endless)' : ''}
+              {canFinishQuiz && <span className="finish-badge"> • Bisa Selesai</span>}
+            </span>
           </div>
         </div>
       </div>
