@@ -3,11 +3,14 @@ import { kanaDictionary } from '../../data/kanaDictionary';
 import ShowStage from './ShowStage';
 import Question from './Question';
 import QuizResultAnalysis from './QuizResultAnalysis';
+import QuizStatistics from './QuizStatistics';
 
 class Game extends Component {
   state = {
     showScreen: '',
-    quizReport: null
+    quizReport: null,
+    showStatistics: false,
+    currentQuizStats: null
   }
 
   componentWillMount() {
@@ -58,6 +61,35 @@ class Game extends Component {
     });
   }
 
+  // Show statistics during quiz
+  handleShowStatistics = (stats) => {
+    this.setState({
+      showStatistics: true,
+      currentQuizStats: stats,
+      showScreen: 'statistics'
+    });
+  }
+
+  // Continue quiz from statistics
+  handleContinueQuiz = () => {
+    this.setState({
+      showStatistics: false,
+      showScreen: 'question'
+    });
+  }
+
+  // Finish quiz from statistics
+  handleFinishQuizFromStats = () => {
+    if (this.state.currentQuizStats && this.state.currentQuizStats.quizReport) {
+      this.setState({
+        showScreen: 'result',
+        quizReport: this.state.currentQuizStats.quizReport,
+        showStatistics: false,
+        currentQuizStats: null
+      });
+    }
+  }
+
   render() {
     return (
       <div>
@@ -74,6 +106,19 @@ class Game extends Component {
               decidedGroups={this.props.decidedGroups}
               gameTimer={this.props.gameTimer}
               onQuizComplete={this.handleQuizComplete}
+              onShowStatistics={this.handleShowStatistics}
+            />
+        }
+        {
+          this.state.showScreen==='statistics' && this.state.currentQuizStats &&
+            <QuizStatistics
+              correctCount={this.state.currentQuizStats.correctCount}
+              wrongCount={this.state.currentQuizStats.wrongCount}
+              kanaStats={this.state.currentQuizStats.kanaStats}
+              totalScore={this.state.currentQuizStats.totalScore}
+              onContinue={this.handleContinueQuiz}
+              onFinish={this.handleFinishQuizFromStats}
+              stage={this.props.stage}
             />
         }
         {

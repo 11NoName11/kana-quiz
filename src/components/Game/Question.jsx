@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { kanaDictionary } from '../../data/kanaDictionary';
 import { quizSettings } from '../../data/quizSettings';
 import { findRomajisAtKanaKey, removeFromArray, arrayContains, shuffle, cartesianProduct } from '../../data/helperFuncs';
-import { generateQuizReport, saveQuizReport } from '../../data/quizAnalysisUtils';
+import { generateQuizReport, saveQuizReport, calculateKanaStats } from '../../data/quizAnalysisUtils';
 import './Question.scss';
 
 class Question extends Component {
@@ -252,6 +252,24 @@ class Question extends Component {
     }
   }
 
+  // Method to show statistics during quiz
+  showStatistics = () => {
+    const timeSpent = Math.round((Date.now() - this.state.quizStartTime) / 1000);
+    const kanaStats = calculateKanaStats(this.state.answerHistory, {});
+    const report = generateQuizReport(this.state.answerHistory, timeSpent, this.props.decidedGroups);
+    
+    if(this.props.onShowStatistics) {
+      this.props.onShowStatistics({
+        correctCount: this.state.correctCount,
+        wrongCount: this.state.wrongCount,
+        kanaStats: kanaStats,
+        totalScore: this.state.totalScore,
+        quizReport: report,
+        stage: this.props.stage
+      });
+    }
+  }
+
   initializeCharacters() {
     this.askableKanas = {};
     this.askableKanaKeys = [];
@@ -407,6 +425,11 @@ class Question extends Component {
     const canFinishQuiz = this.props.isLocked &&
                           (this.props.stage === 4 || this.props.stage === 5) &&
                           this.state.stageProgress >= quizSettings.stageLength[this.props.stage];
+    
+    // Check if user can view statistics (Mode Lock Level 4/5 with some answers)
+    const canViewStats = this.props.isLocked &&
+                         (this.props.stage === 4 || this.props.stage === 5) &&
+                         this.state.correctCount + this.state.wrongCount > 0;
 
     return (
       <div className="text-center question col-xs-12">
@@ -443,6 +466,15 @@ class Question extends Component {
               title="Selesai dan lihat hasil (minimal 20 soal terjawab)"
             >
               ✓ Selesai
+            </button>
+          )}
+          {canViewStats && (
+            <button
+              className="btn btn-sm btn-info view-stats-button"
+              onClick={this.showStatistics}
+              title="Lihat statistik quiz Anda"
+            >
+              📊 Statistik
             </button>
           )}
         </div>

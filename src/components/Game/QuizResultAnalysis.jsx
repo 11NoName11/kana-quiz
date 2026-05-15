@@ -193,42 +193,37 @@ class QuizResultAnalysis extends Component {
     const evaluationColor = this.getEvaluationColor(report.evaluation.level);
 
     return (
-      <div className="quiz-result-overlay">
-        <div className="quiz-result-modal">
+      <div className="quiz-result-page">
+        <div className="quiz-result-container">
           {/* Header */}
           <div className="result-header">
-            <h1>Quiz Selesai!</h1>
-            <button className="close-btn" onClick={onClose}>✕</button>
+            <h1>🎯 Quiz Selesai!</h1>
+            <button className="close-btn" onClick={onClose} title="Kembali ke menu">✕</button>
           </div>
 
           {/* Main Evaluation */}
-          <div className="evaluation-card" style={{ borderLeftColor: evaluationColor }}>
-            <div className="evaluation-content">
-              <div
-                className="evaluation-badge"
-                style={{ backgroundColor: evaluationColor }}
-              >
-                {report.evaluation.message}
+          <div className="accuracy-display-results">
+            <div className="accuracy-circle-container">
+              <svg viewBox="0 0 120 120" className="accuracy-circle">
+                <circle cx="60" cy="60" r="50" className="accuracy-circle-bg" />
+                <circle
+                  cx="60"
+                  cy="60"
+                  r="50"
+                  className="accuracy-circle-fill"
+                  style={{
+                    strokeDashoffset: 314.159 - (314.159 * report.overallAccuracy / 100),
+                    stroke: evaluationColor
+                  }}
+                />
+              </svg>
+              <div className="accuracy-text">
+                <div className="accuracy-percentage">{report.overallAccuracy}%</div>
+                <div className="accuracy-label">Akurasi</div>
               </div>
-              <div className="accuracy-circle">
-                <svg viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="45" className="accuracy-circle-bg" />
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="45"
-                    className="accuracy-circle-fill"
-                    style={{
-                      strokeDashoffset: 282.7 - (282.7 * report.overallAccuracy / 100),
-                      stroke: evaluationColor
-                    }}
-                  />
-                </svg>
-                <div className="accuracy-text">
-                  <div className="accuracy-value">{report.overallAccuracy}%</div>
-                  <div className="accuracy-label">Akurasi</div>
-                </div>
-              </div>
+            </div>
+            <div className="evaluation-badge" style={{ backgroundColor: evaluationColor }}>
+              {report.evaluation.message}
             </div>
           </div>
 
