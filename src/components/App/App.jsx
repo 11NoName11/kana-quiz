@@ -18,6 +18,14 @@ class App extends Component {
     this.setState({gameState: 'chooseCharacters'});
   }
 
+  startKanjiQuiz = () => {
+    this.setState({gameState: 'kanjiQuiz'});
+  }
+
+  endKanjiQuiz = () => {
+    this.setState({gameState: 'chooseCharacters'});
+  }
+
   componentDidMount() {
     if(document.getElementById('footer'))
       document.getElementById('footer').style.display = "block";
@@ -39,6 +47,7 @@ class App extends Component {
         <Navbar
           gameState={this.state.gameState}
           handleEndGame={this.endGame}
+          handleEndKanjiQuiz={this.endKanjiQuiz}
         />
         <div className="outercontainer">
           <div className="container game">
@@ -46,6 +55,8 @@ class App extends Component {
               gameState={this.state.gameState}
               handleStartGame={this.startGame}
               handleEndGame={this.endGame}
+              handleStartKanjiQuiz={this.startKanjiQuiz}
+              handleEndKanjiQuiz={this.endKanjiQuiz}
             />
           </div>
         </div>

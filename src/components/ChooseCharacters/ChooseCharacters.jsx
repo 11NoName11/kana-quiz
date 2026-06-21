@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 import Switch from 'react-toggle-switch';
 import { kanaDictionary } from '../../data/kanaDictionary';
+import { ALL_KANJI_PAGES, KANJI_PAGE_1, KANJI_PAGE_2, KANJI_PAGE_3, KANJI_PAGE_4, KANJI_PAGE_5, KANJI_PAGE_6, KANJI_PAGE_7, KANJI_PAGE_8, KANJI_PAGE_9, KANJI_PAGE_10, KANJI_PAGE_11 } from '../../data/kanji';
 import './ChooseCharacters.scss';
 import CharacterGroup from './CharacterGroup';
+
+const PAGES_DATA = [
+  KANJI_PAGE_1, KANJI_PAGE_2, KANJI_PAGE_3, KANJI_PAGE_4, KANJI_PAGE_5,
+  KANJI_PAGE_6, KANJI_PAGE_7, KANJI_PAGE_8, KANJI_PAGE_9, KANJI_PAGE_10, KANJI_PAGE_11
+];
 
 class ChooseCharacters extends Component {
   state = {
@@ -11,7 +17,8 @@ class ChooseCharacters extends Component {
     showAlternatives: [],
     showSimilars: [],
     startIsVisible: true,
-    selectedTimer: 10
+    selectedTimer: 10,
+    showKanjiPages: true
   }
 
   componentDidMount() {
@@ -206,6 +213,38 @@ class ChooseCharacters extends Component {
     this.props.handleStartGame(this.state.selectedGroups);
   }
 
+  toggleKanjiPages = () => {
+    this.setState({ showKanjiPages: !this.state.showKanjiPages, errMsg: '' });
+  }
+
+  startKanjiQuiz = (pageIndex) => {
+    const pageData = PAGES_DATA[pageIndex];
+
+    if (pageData.length === 0) {
+      this.setState({ errMsg: `Halaman ${pageIndex + 1} masih kosong` });
+      return;
+    }
+
+    this.props.handleStartKanjiQuiz(pageData, pageIndex + 1);
+  }
+
+  startAllKanjiQuiz = () => {
+    // Combine all pages with data
+    const allKanji = PAGES_DATA.reduce((acc, page) => {
+      if (page.length > 0) {
+        return acc.concat(page);
+      }
+      return acc;
+    }, []);
+
+    if (allKanji.length === 0) {
+      this.setState({ errMsg: 'Tidak ada data kanji' });
+      return;
+    }
+
+    this.props.handleStartKanjiQuiz(allKanji, 'Semua Halaman');
+  }
+
   render() {
     return (
       <div className="choose-characters">
@@ -294,6 +333,61 @@ class ChooseCharacters extends Component {
             }
             <button ref={c => this.startRef = c} className="btn btn-danger startgame-button" onClick={() => this.startGame()}>Mulai quiz nyaaa</button>
           </div>
+          {
+            this.state.showKanjiPages && (
+              <div className="col-xs-12" style={{marginTop: '20px', marginBottom: '20px'}}>
+                <div className="panel panel-info">
+                  <div className="panel-heading" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px'}}>
+                    <h4 style={{margin: 0, fontSize: '18px', fontWeight: 'bold'}}>📚 Pilih Halaman Kanji</h4>
+                  </div>
+                  <div className="panel-body">
+                    <div className="kanji-pages-grid" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '12px', marginBottom: '20px'}}>
+                      {ALL_KANJI_PAGES.map((page, idx) => {
+                        const hasData = PAGES_DATA[idx].length > 0;
+                        return (
+                          <button
+                            key={idx}
+                            className={`btn ${hasData ? 'btn-primary' : 'btn-default'}`}
+                            onClick={() => this.startKanjiQuiz(idx)}
+                            disabled={!hasData}
+                            style={{
+                              padding: '12px 8px',
+                              minHeight: '90px',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              opacity: hasData ? 1 : 0.5,
+                              cursor: hasData ? 'pointer' : 'not-allowed',
+                              borderRadius: '6px',
+                              fontSize: hasData ? '13px' : '12px',
+                              transition: 'all 0.2s',
+                              boxShadow: hasData ? '0 2px 4px rgba(0,0,0,0.1)' : 'none'
+                            }}
+                            onMouseEnter={(e) => hasData && (e.target.style.transform = 'translateY(-2px)')}
+                            onMouseLeave={(e) => hasData && (e.target.style.transform = 'translateY(0)')}
+                          >
+                            <div style={{fontSize: '15px', fontWeight: 'bold', marginBottom: '4px'}}>Hal {page.page}</div>
+                            <div style={{fontSize: '11px', opacity: 0.8, marginBottom: '2px'}}>{page.range}</div>
+                            <div style={{fontSize: '12px', fontWeight: '600', marginTop: '4px'}}>{PAGES_DATA[idx].length} kanji</div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <div style={{borderTop: '1px solid #ddd', paddingTop: '15px'}}>
+                      <button
+                        className="btn btn-success btn-block"
+                        onClick={this.startAllKanjiQuiz}
+                        style={{marginTop: '0', padding: '12px', fontSize: '14px', fontWeight: 'bold'}}
+                      >
+                        🎯 Test Semua Kanji ({PAGES_DATA.reduce((sum, page) => sum + page.length, 0)} total)
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          }
           <div className="down-arrow"
             style={{display: this.state.startIsVisible ? 'none' : 'block'}}
             onClick={(e) => this.scrollToStart(e)}

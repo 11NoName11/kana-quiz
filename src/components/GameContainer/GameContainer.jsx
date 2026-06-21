@@ -2,13 +2,16 @@ import React, { Component } from 'react';
 import { kanaDictionary } from '../../data/kanaDictionary';
 import ChooseCharacters from '../ChooseCharacters/ChooseCharacters';
 import Game from '../Game/Game';
+import KanjiQuiz from '../KanjiQuiz/KanjiQuiz';
 
 class GameContainer extends Component {
   state = {
     stage:1,
     isLocked: false,
     decidedGroups: JSON.parse(localStorage.getItem('decidedGroups') || null) || [],
-    gameTimer: 10
+    gameTimer: 10,
+    selectedKanjiPage: null,
+    kanjiQuizCards: []
   }
 
   componentWillReceiveProps() {
@@ -25,6 +28,26 @@ class GameContainer extends Component {
     this.setState({decidedGroups: decidedGroups});
     localStorage.setItem('decidedGroups', JSON.stringify(decidedGroups));
     this.props.handleStartGame();
+  }
+
+  startKanjiQuizPage = () => {
+    this.props.handleStartKanjiQuizPage();
+  }
+
+  selectKanjiPage = (cards, pageName) => {
+    this.setState({
+      kanjiQuizCards: cards,
+      selectedKanjiPage: pageName
+    });
+    this.props.handleStartKanjiQuiz();
+  }
+
+  startKanjiQuizDirect = (cards, pageName) => {
+    this.setState({
+      kanjiQuizCards: cards,
+      selectedKanjiPage: pageName
+    });
+    this.props.handleStartKanjiQuiz();
   }
 
   stageUp = () => {
@@ -54,6 +77,7 @@ class GameContainer extends Component {
               stage={this.state.stage}
               isLocked={this.state.isLocked}
               lockStage={this.lockStage}
+              handleStartKanjiQuiz={this.startKanjiQuizDirect}
             />
           }
           { this.props.gameState==='game' &&
@@ -64,6 +88,13 @@ class GameContainer extends Component {
                 isLocked={this.state.isLocked}
                 lockStage={this.lockStage}
                 gameTimer={this.state.gameTimer}
+              />
+          }
+          { this.props.gameState==='kanjiQuiz' &&
+              <KanjiQuiz
+                cards={this.state.kanjiQuizCards}
+                pageName={this.state.selectedKanjiPage}
+                handleEndKanjiQuiz={this.props.handleEndGame}
               />
           }
         </div>
