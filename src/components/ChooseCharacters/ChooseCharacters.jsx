@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import Switch from 'react-toggle-switch';
 import { kanaDictionary } from '../../data/kanaDictionary';
-import { ALL_KANJI_PAGES, KANJI_PAGE_1, KANJI_PAGE_2, KANJI_PAGE_3, KANJI_PAGE_4, KANJI_PAGE_5, KANJI_PAGE_6, KANJI_PAGE_7, KANJI_PAGE_8, KANJI_PAGE_9, KANJI_PAGE_10, KANJI_PAGE_11 } from '../../data/kanji';
+import { ALL_KANJI_BAB, KANJI_BAB_1, KANJI_BAB_2, KANJI_BAB_3, KANJI_BAB_4, KANJI_BAB_5, KANJI_BAB_6, KANJI_BAB_7 } from '../../data/kanji';
 import './ChooseCharacters.scss';
 import CharacterGroup from './CharacterGroup';
 
 const PAGES_DATA = [
-  KANJI_PAGE_1, KANJI_PAGE_2, KANJI_PAGE_3, KANJI_PAGE_4, KANJI_PAGE_5,
-  KANJI_PAGE_6, KANJI_PAGE_7, KANJI_PAGE_8, KANJI_PAGE_9, KANJI_PAGE_10, KANJI_PAGE_11
+  KANJI_BAB_1, KANJI_BAB_2, KANJI_BAB_3, KANJI_BAB_4, KANJI_BAB_5,
+  KANJI_BAB_6, KANJI_BAB_7
 ];
 
 class ChooseCharacters extends Component {
@@ -338,11 +338,11 @@ class ChooseCharacters extends Component {
               <div className="col-xs-12" style={{marginTop: '20px', marginBottom: '20px'}}>
                 <div className="panel panel-info">
                   <div className="panel-heading" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px'}}>
-                    <h4 style={{margin: 0, fontSize: '18px', fontWeight: 'bold'}}>📚 Pilih Halaman Kanji</h4>
+                    <h4 style={{margin: 0, fontSize: '18px', fontWeight: 'bold'}}>📚 Pilih Bab Kanji</h4>
                   </div>
                   <div className="panel-body">
                     <div className="kanji-pages-grid" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '12px', marginBottom: '20px'}}>
-                      {ALL_KANJI_PAGES.map((page, idx) => {
+                      {ALL_KANJI_BAB.map((bab, idx) => {
                         const hasData = PAGES_DATA[idx].length > 0;
                         return (
                           <button
@@ -367,8 +367,8 @@ class ChooseCharacters extends Component {
                             onMouseEnter={(e) => hasData && (e.target.style.transform = 'translateY(-2px)')}
                             onMouseLeave={(e) => hasData && (e.target.style.transform = 'translateY(0)')}
                           >
-                            <div style={{fontSize: '15px', fontWeight: 'bold', marginBottom: '4px'}}>Hal {page.page}</div>
-                            <div style={{fontSize: '11px', opacity: 0.8, marginBottom: '2px'}}>{page.range}</div>
+                            <div style={{fontSize: '15px', fontWeight: 'bold', marginBottom: '4px'}}>Bab {bab.bab}</div>
+                            <div style={{fontSize: '11px', opacity: 0.8, marginBottom: '2px'}}>{bab.range}</div>
                             <div style={{fontSize: '12px', fontWeight: '600', marginTop: '4px'}}>{PAGES_DATA[idx].length} kanji</div>
                           </button>
                         );
