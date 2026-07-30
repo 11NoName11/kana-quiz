@@ -73,7 +73,7 @@ class KanjiQuiz extends Component {
 
   createQuizItems = (cards = []) => {
     const pool = cards || [];
-    const total = Math.min(pool.length, 100);
+    const total = pool.length; // allow full chapter size (e.g., 113)
     const remaining = [...pool];
     const quizItems = [];
 
@@ -206,7 +206,7 @@ class KanjiQuiz extends Component {
                 📚 Flashcard
               </button>
               <button className="mode-btn mode-btn-secondary" onClick={this.startQuizMode}>
-                🧠 Quiz ({Math.min(cards.length, 100)} soal)
+                🧠 Quiz ({cards.length} soal)
               </button>
             </div>
           </div>
