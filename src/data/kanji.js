@@ -100,7 +100,7 @@ export const KANJI_BAB_1 = [
   { id: 98, kanji: "晴れ", hiragana: "はれ", arti: "Cerah" },
   { id: 99, kanji: "雨", hiragana: "あめ", arti: "Hujan" },
   { id: 100, kanji: "雪", hiragana: "ゆき", arti: "Salju" },
-  { id: 101, kanji: "雲", hiragana: "くも", arti: "Mendung" }
+  // end of bab 1
 ];
 
 // Bab 2: Kanji 101-200
@@ -519,7 +519,7 @@ export const KANJI_BAB_5 = [
   { id: 500, kanji: "夕方", hiragana: "ゆうがた", arti: "Sore" }
 ];
 
-// Bab 6: Kanji 501-600
+// Bab 6: Kanji 501-613
 export const KANJI_BAB_6 = [
   { id: 501, kanji: "季節", hiragana: "きせつ", arti: "Musim" },
   { id: 502, kanji: "昨日", hiragana: "きのう", arti: "Kemarin" },
@@ -643,7 +643,7 @@ export const ALL_KANJI_BAB = [
   { bab: 3, data: KANJI_BAB_3, range: "201-300" },
   { bab: 4, data: KANJI_BAB_4, range: "301-400" },
   { bab: 5, data: KANJI_BAB_5, range: "401-500" },
-  { bab: 6, data: KANJI_BAB_6, range: "501-600" },
+  { bab: 6, data: KANJI_BAB_6, range: "501-613" },
 ];
 
 // Helper function to get all kanji from a specific bab

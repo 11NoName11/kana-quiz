@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import Switch from 'react-toggle-switch';
 import { kanaDictionary } from '../../data/kanaDictionary';
-import { ALL_KANJI_BAB, KANJI_BAB_1, KANJI_BAB_2, KANJI_BAB_3, KANJI_BAB_4, KANJI_BAB_5, KANJI_BAB_6, KANJI_BAB_7 } from '../../data/kanji';
+import { ALL_KANJI_BAB, KANJI_BAB_1, KANJI_BAB_2, KANJI_BAB_3, KANJI_BAB_4, KANJI_BAB_5, KANJI_BAB_6 } from '../../data/kanji';
 import './ChooseCharacters.scss';
 import CharacterGroup from './CharacterGroup';
 
 const PAGES_DATA = [
   KANJI_BAB_1, KANJI_BAB_2, KANJI_BAB_3, KANJI_BAB_4, KANJI_BAB_5,
-  KANJI_BAB_6, KANJI_BAB_7
+  KANJI_BAB_6
 ];
 
 class ChooseCharacters extends Component {
